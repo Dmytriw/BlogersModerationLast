@@ -8,6 +8,14 @@ $(function () {
         return false;
     });
 
+    $('.header__nav__container, .nav__overlay').on('scroll touchmove mousewheel', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
+
+    pagination();
+
     $('.copy__nick').click(function (e) {
         e.preventDefault();
     });
@@ -67,7 +75,15 @@ $(function () {
     infographics();
     discardRequest();
     closingPopups();
-    countFotmat()
+    countFotmat();
+
+    $('.pagination__page').click(function (e) {
+        e.preventDefault();
+
+        $(this).addClass('active');
+        $(this).siblings().removeClass('active');
+        pagination();
+    })
 });
 
 
@@ -77,28 +93,16 @@ function navigation() {
     $('.hamburger__button').click(function (e) {
         e.preventDefault();
 
-        var windowTop = $(window).scrollTop();
-
         setTimeout(function () {
-            $('body').attr('data-top', windowTop);
             $('.header__nav__container').addClass('openedNav');
-            $('html, body').css({'overflow' : 'hidden', 'position' : 'fixed'});
 
-            var windowTopData = $('body').attr('data-top');
-
-            $('body').scrollTop(windowTopData);
         }, 50);
     });
 
     $('.vav__close, .nav__overlay').click(function (e) {
         e.preventDefault();
 
-        var windowTop = $('body').attr('data-top');
-
         $('.header__nav__container').removeClass('openedNav');
-        $('html, body').css({'overflow' : 'visible', 'position' : 'relative'});
-
-        $(window).scrollTop(windowTop);
 
     });
 }
@@ -141,10 +145,10 @@ function requestLoad() {
 }
 function scrinshotCheck() {
     $('.scrinshots__container').each(function () {
-        var 
+        var
             $this = $(this),
             thisImg = $this.find('img').length;
-        
+
         if(thisImg < 1) {
             $this.html('<div class="emptyImg flex"><div class="textEmpty">Нет скриншотов</div><a href="#" class="buttonEmpty">Попросить прислать скриншоты</a></div>')
         }
@@ -322,9 +326,18 @@ function selectorOpen($this) {
     if(!thisContainer.hasClass('openedSelect')){
         setTimeout(function(){
             thisContainer.addClass('openedSelect');
+
+            if(thisContainer.hasClass('accaunt__select')) {
+                var
+                    marHeight = thisContainer.find('.input__options').height(),
+                    newVal = marHeight + 15;
+
+                thisContainer.css({'margin-bottom' : newVal+'px'})
+            }
         }, 50);
     } else {
         thisContainer.removeClass('openedSelect');
+        $('.accaunt__select').css({'margin-bottom' : '0'});
     }
 
     selectorFunctions();
@@ -334,6 +347,7 @@ function selectorOpen($this) {
             $('.input__select').removeClass('openedSelect');
         }
         if(!$(evt.target).is('.accaunt__select .input__option') && !$(evt.target).is('.accaunt__select .input__option span')) {
+            $('.accaunt__select').css({'margin-bottom' : '0'});
             $('.input__select').removeClass('openedSelect');
         } else {
             $(evt.target).closest('.accaunt__select').addClass('openedSelect');
@@ -597,5 +611,134 @@ function countFotmat() {
 
         $(this).find('.comertialNumInput').attr('value', 'Формат рекламы '+thisIndex);
         $(this).find('.comercails__num').text('№'+thisIndex);
+    });
+}
+
+function pagination() {
+    $('.pagination__pages ').each(function () {
+        var
+            pages = $(this).find('.pagination__page'),
+            curentPage = $(this).find('.active'),
+            curentIndex = curentPage.index(),
+            toPrev = curentIndex - 2,
+            toNext = curentIndex + 3,
+            pageLength = pages.length - 1,
+            firstPages = pages.slice(0, 5),
+            prevPages = pages.slice(toPrev, curentIndex),
+            nextPages = pages.slice(curentIndex, toNext),
+            lastPages = pages.slice(pageLength - 4, pageLength);
+
+        if(pages.length < 6) {
+            pages.addClass('showMob');
+        }
+
+        pages.removeClass('showMob');
+
+        if(curentIndex === 1) {
+            curentPage.prevAll().addClass('showMob')
+        }
+
+        if(curentIndex < 2) {
+            firstPages.each(function () {
+                $(this).addClass('showMob');
+
+                var
+                    pageLast = pages.eq(4);
+
+                pages.removeClass('lastPage');
+                pageLast.addClass('lastPage');
+            });
+        } else {
+            var
+                pageLast = pages.eq(toNext - 1);
+
+            pages.removeClass('lastPage');
+            pageLast.addClass('lastPage');
+        }
+
+        prevPages.each(function () {
+            $(this).addClass('showMob');
+        });
+
+        curentPage.addClass('showMob');
+
+        nextPages.each(function () {
+            $(this).addClass('showMob');
+        });
+
+        if(curentIndex > pageLength - 2) {
+            lastPages.each(function () {
+                $(this).addClass('showMob');
+                pages.removeClass('lastPage');
+            });
+        }
+
+        if(pages.length < 6) {
+            pages.addClass('showMob');
+        }
+    });
+
+
+    $('.pagination__pages ').each(function () {
+        var
+            pages = $(this).find('.pagination__page'),
+            curentPage = $(this).find('.active'),
+            curentIndex = curentPage.index(),
+            toPrev = curentIndex - 4,
+            toNext = curentIndex + 5,
+            pageLength = pages.length - 1,
+            firstPages = pages.slice(0, 9),
+            prevPages = pages.slice(toPrev, curentIndex),
+            nextPages = pages.slice(curentIndex, toNext),
+            lastPages = pages.slice(pageLength - 8, pageLength);
+
+        if(pages.length < 10) {
+            pages.addClass('showDesc');
+        }
+
+        pages.removeClass('showDesc');
+
+        if(curentIndex === 3) {
+            curentPage.prevAll().addClass('showDesc')
+        }
+
+        if(curentIndex < 4) {
+            firstPages.each(function () {
+                $(this).addClass('showDesc');
+
+                var
+                    pageLast = pages.eq(8);
+
+                pages.removeClass('lastPageDesc');
+                pageLast.addClass('lastPageDesc');
+            });
+        } else {
+            var
+                pageLast = pages.eq(toNext - 1);
+
+            pages.removeClass('lastPageDesc');
+            pageLast.addClass('lastPageDesc');
+        }
+
+        prevPages.each(function () {
+            $(this).addClass('showDesc');
+        });
+
+        curentPage.addClass('showDesc');
+
+        nextPages.each(function () {
+            $(this).addClass('showDesc');
+        });
+
+        if(curentIndex > pageLength - 4) {
+            lastPages.each(function () {
+                $(this).addClass('showDesc');
+                pages.removeClass('lastPageDesc');
+            });
+        }
+
+        if(pages.length < 10) {
+            pages.addClass('showDesc');
+        }
     });
 }

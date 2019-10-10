@@ -92,3 +92,25 @@
   background-size: 14px;
   cursor: pointer;
 }
+
+@media screen and (max-width: 1023px) {
+  .moderation__nav__conent {
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+  .moderation__nav__tabs {
+    margin-bottom: 15px;
+  }
+  .search__form {
+    margin-bottom: 15px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .moderation__nav__tabs {
+    margin-right: 0;
+  }
+  .moderation__nav__tabs a {
+    font-size: 13px;
+  }
+}
